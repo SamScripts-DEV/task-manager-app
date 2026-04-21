@@ -14,13 +14,13 @@ def calculate_priority_score(
     if due_date:
         days_until = (due_date - datetime.utcnow()).days
 
-        if days_until < 0:
+        if days_until <= 0:
             score += 40
         elif days_until == 1:
             score += 35
         elif days_until <= 3:
             score += 25
-        elif days_until >= 7:
+        elif days_until < 7:
             score += 15
         elif days_until <= 14:
             score += 5
