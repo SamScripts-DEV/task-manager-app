@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List
-from sqlalchemy import ForeignKey, Text, func
+from sqlalchemy import ForeignKey, Text, func, String
 from sqlalchemy.orm import declarative_base, mapped_column, Mapped, relationship
 from app.database import Base
 
@@ -23,7 +23,7 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    title: Mapped[str] = mapped_column(max_length=200)
+    title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(Text)
     due_date: Mapped[datetime | None] = mapped_column(index=True)
     importance: Mapped[int] = mapped_column(default=3)
