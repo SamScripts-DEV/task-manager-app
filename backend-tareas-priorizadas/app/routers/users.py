@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas import UserCreate, userResponse, TokenResponse
+from app.schemas import UserCreate, UserResponse, TokenResponse
 from app.services.user_service import create_user, get_user_by_email
 from app.auth import verify_password, create_access_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.post("/signup", response_model=userResponse, status_code=status.HTTP_201_CREATED )
+@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED )
 def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user = get_user_by_email(db, user_data.email)
 
