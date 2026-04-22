@@ -1,0 +1,7 @@
+{
+  "name": "frontend-tareas-priorizadas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
