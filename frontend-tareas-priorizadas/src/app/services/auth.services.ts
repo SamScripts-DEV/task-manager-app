@@ -145,18 +145,18 @@ export class AuthService {
 
 
   private handleError(error: any): void {
-    let errorMessage = 'Error desconocido';
+    let errorMessage = 'Unknown error';
 
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
     } else if (error.status === 400) {
-      errorMessage = error.error?.detail || 'Datos inválidos';
+      errorMessage = error.error?.detail || 'Invalid data';
     } else if (error.status === 401) {
-      errorMessage = 'Email o contraseña incorrectos';
+      errorMessage = 'Not authenticated';
     } else if (error.status === 409) {
-      errorMessage = 'El email ya existe';
+      errorMessage = 'The email already exists';
     } else if (error.status === 0) {
-      errorMessage = 'No se pudo conectar con el servidor';
+      errorMessage = 'Could not connect to the server';
     } else {
       errorMessage = `Error: ${error.status}`;
     }

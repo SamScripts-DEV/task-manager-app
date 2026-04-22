@@ -2,7 +2,7 @@ export interface Task {
     id: number;
     user_id: number;
     title: string;
-    descrition: string;
+    description: string;
     due_date: string
     importance: number;
     effort: number;

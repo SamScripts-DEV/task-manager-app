@@ -45,7 +45,7 @@ export class TaskService {
             id: Date.now(),
             user_id: '' as unknown as number,
             title: request.title,
-            descrition: request.description,
+            description: request.description,
             importance: request.importance,
             effort: request.effort,
             due_date: request.due_date,
@@ -86,7 +86,7 @@ export class TaskService {
         const optimisticTask = {
             ...oldtask,
             ...request,
-            updated_t: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
         };
 
         const updatedTasks = [...currentTasks];
@@ -177,18 +177,18 @@ export class TaskService {
     }
 
     private handleError(error: any): void {
-        let errorMessage = 'Error desconocido';
+        let errorMessage = 'Unknown error';
 
         if (error.error instanceof ErrorEvent) {
             errorMessage = `Error: ${error.error.message}`;
         } else if (error.status === 400) {
-            errorMessage = error.error?.detail || 'Datos inválidos';
+            errorMessage = error.error?.detail || 'Invalid data';
         } else if (error.status === 401) {
-            errorMessage = 'No autenticado';
+            errorMessage = 'Not authenticated';
         } else if (error.status === 404) {
-            errorMessage = 'Tarea no encontrada';
+            errorMessage = 'Task not found';
         } else if (error.status === 0) {
-            errorMessage = 'No se pudo conectar con el servidor';
+            errorMessage = 'Could not connect to the server';
         } else {
             errorMessage = `Error: ${error.status}`;
         }
