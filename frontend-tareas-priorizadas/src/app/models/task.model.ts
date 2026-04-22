@@ -1,6 +1,6 @@
 export interface Task {
     id: number;
-    use_id: number;
+    user_id: number;
     title: string;
     descrition: string;
     due_date: string
