@@ -9,5 +9,20 @@ export interface Task {
     completed: boolean;
     created_at: string;
     updated_at: string;
-    priority: number;
+    priority_score?: number;
+}
+
+export interface CreateTaskRequest {
+    title: string;
+    description: string;
+    importance: number;
+    effort: number;
+    due_date: string;
+}
+
+export interface UpdateTaskRequest extends Partial<CreateTaskRequest> {}
+
+export interface TaskResponse {
+    tasks: Task[];
+    total: number;
 }
