@@ -1,0 +1,55 @@
+﻿<ion-content [fullscreen]="true">
+  <div class="central-container">
+    
+    <div class="brand-section text-center mb-10">
+      <div class="logo-placeholder">
+        <ion-icon name="list-outline"></ion-icon>
+      </div>
+      <h1>Gestor de Tareas</h1>
+      <p>Organizacion inteligente</p>
+    </div>
+
+    <div class="app-card">
+      <h2 class="text-center mb-10">Bienvenido</h2>
+      <p class="text-center mb-10 text-muted">Ingresa tus credenciales</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <ion-list lines="none">
+          <ion-item>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input type="email" formControlName="email" placeholder="nombre@ejemplo.com"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input type="password" formControlName="password" placeholder="********"></ion-input>
+          </ion-item>
+        </ion-list>
+
+        <div class="error-box" *ngIf="error$ | async as error">
+          {{ error }}
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="loginForm.invalid || (isLoading$ | async)" class="mt-20">
+          <ion-spinner *ngIf="isLoading$ | async" name="crescent"></ion-spinner>
+          <span *ngIf="!(isLoading$ | async)">Entrar</span>
+        </ion-button>
+      </form>
+
+      <div class="text-center mt-20">
+        <p class="text-muted mb-10">No tienes cuenta?</p>
+        <ion-button fill="clear" (click)="goToSignup()" color="secondary">
+          CREAR CUENTA
+        </ion-button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+
+
+
+
+
+
