@@ -1,0 +1,77 @@
+﻿
+$success-color: #4caf50;
+$error-color: #f44336;
+$warning-color: #ff9800;
+$primary-color: #0066cc;
+$spacing-unit: 8px;
+
+.notification-container {
+  position: fixed;
+  top: $spacing-unit * 2;
+  left: $spacing-unit * 2;
+  right: $spacing-unit * 2;
+  z-index: 9999;
+  pointer-events: none;
+
+  @media (min-width: 768px) {
+    left: auto;
+    right: $spacing-unit * 2;
+    max-width: 400px;
+  }
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: $spacing-unit;
+  padding: $spacing-unit * 2;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 300ms ease-in-out;
+  pointer-events: auto;
+
+  .notification-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .notification-message {
+    flex: 1;
+  }
+
+  
+  &.notification-success {
+    background-color: $success-color;
+    color: white;
+  }
+
+  &.notification-error {
+    background-color: $error-color;
+    color: white;
+  }
+
+  &.notification-warning {
+    background-color: $warning-color;
+    color: white;
+  }
+
+  &.notification-info {
+    background-color: $primary-color;
+    color: white;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+

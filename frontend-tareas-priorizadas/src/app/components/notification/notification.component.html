@@ -1,0 +1,8 @@
+﻿<div class="notification-container" *ngIf="notification$ | async as notification">
+  <div [class]="'notification notification-' + notification.type">
+    <ion-icon [name]="getIcon(notification.type)" class="notification-icon"></ion-icon>
+    <span class="notification-message">{{ notification.message }}</span>
+  </div>
+</div>
+
+
