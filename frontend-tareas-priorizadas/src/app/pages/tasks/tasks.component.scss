@@ -1,0 +1,53 @@
+﻿.tasks-container {
+  padding: 16px;
+  min-height: 100%;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 100px;
+}
+
+
+ion-fab {
+
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.custom-fab-button {
+
+  --background: #4361ee;
+  --background-activated: #3a56d4;
+  --color: white;
+  --box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+  
+
+  width: 56px;
+  height: 56px;
+  
+ 
+  overflow: visible;
+  --border-radius: 50%;
+  
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  ion-icon {
+    font-size: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .tasks-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+}
+
+

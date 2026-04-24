@@ -1,4 +1,4 @@
-export interface Task {
+﻿export interface Task {
     id: number;
     user_id: number;
     title: string;
@@ -26,3 +26,5 @@ export interface TaskResponse {
     tasks: Task[];
     total: number;
 }
+
+

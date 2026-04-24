@@ -1,0 +1,68 @@
+﻿<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Mis Tareas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onLogout()" color="light">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      refreshingSpinner="crescent"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="tasks-container">
+    <div *ngIf="isLoading$ | async" class="loading-state">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Organizando tus prioridades...</p>
+    </div>
+
+    <ng-container *ngIf="tasks$ | async as tasks">
+      <div *ngIf="tasks.length === 0 && !(isLoading$ | async)" class="empty-state">
+        <div class="empty-icon-wrapper">
+          <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+        </div>
+        <h2>¡Todo al día!</h2>
+        <p>No tienes tareas pendientes. Aprovecha para descansar o crea un nuevo reto.</p>
+        <ion-button fill="clear" (click)="goToCreateTask()" color="primary">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Nueva Tarea
+        </ion-button>
+      </div>
+
+      <div
+        *ngIf="tasks.length > 0"
+        cdkDropList
+        class="tasks-list"
+        (cdkDropListDropped)="onTaskDrop($event)"
+      >
+        <app-task-card
+          *ngFor="let task of tasks"
+          cdkDrag
+          [cdkDragData]="task"
+          [task]="task"
+          (complete)="onTaskComplete(task.id)"
+          (delete)="onTaskDelete(task.id)"
+          (edit)="onTaskEdit(task)"
+        ></app-task-card>
+      </div>
+    </ng-container>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToCreateTask()" class="custom-fab-button">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+
+
+
