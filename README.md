@@ -8,13 +8,20 @@ A continuación, encontrarás todas las instrucciones necesarias para desplegar 
 
 ## 📸 Vistazo a la Aplicación
 
-*(Reemplaza las siguientes rutas por las imágenes de tu app correspondientes)*
 
-![Pantalla Principal](ruta/a/tu/imagen_principal.png)
-*Descripción corta de la pantalla principal.*
 
-![Pantalla de Login / Configuración](ruta/a/tu/imagen_login.png)
-*Descripción corta de la interfaz.*
+<img width="235" height="479" alt="image" src="https://github.com/user-attachments/assets/a4090442-337a-49a7-be60-9a1675116c08" />
+
+*Visualizador de tareas pendientes*
+
+<img width="543" height="590" alt="image" src="https://github.com/user-attachments/assets/6ea1c423-4408-411e-bb9a-db44774d70bf" />
+
+*Inicio de sesión.*
+
+<img width="267" height="477" alt="image" src="https://github.com/user-attachments/assets/cd540a9e-3204-4ebb-bfe6-150c4245b4c0" />
+
+*Si no tinene un usuario, puede registrarse*
+
 
 ---
 
