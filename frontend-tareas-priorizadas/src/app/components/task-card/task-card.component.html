@@ -1,0 +1,40 @@
+﻿<div class="task-card-container" [class.completed]="task.completed" [style.border-left-color]="getPriorityColor()">
+  <div class="card-header">
+    <div class="top-row">
+      <ion-checkbox 
+        [checked]="task.completed" 
+        (click)="toggleComplete($event)"
+        class="task-check">
+      </ion-checkbox>
+      <h3 class="task-title">{{ task.title }}</h3>
+      <ion-badge [style.background-color]="getPriorityColor()" class="priority-badge">
+        {{ getPriorityLabel() }}
+      </ion-badge>
+    </div>
+  </div>
+
+  <div class="card-content">
+    <p class="task-description" *ngIf="task.description">{{ task.description }}</p>
+    
+    <div class="task-meta">
+      <div class="meta-item">
+        <ion-icon name="flash-outline"></ion-icon>
+        <span>Esfuerzo: {{ task.effort }}/5</span>
+      </div>
+      <div class="meta-item">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <span>{{ getFormattedDate() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-actions">
+    <ion-button fill="clear" color="primary" (click)="onEdit()">
+      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="danger" (click)="onDelete()">
+      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+    </ion-button>
+  </div>
+</div>
+
