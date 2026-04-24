@@ -1,3 +1,4 @@
+import hashlib
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
@@ -6,19 +7,16 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.config import get_settings
 
-
 settings = get_settings()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 security = HTTPBearer()
-
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
-
 
 def create_access_token(user_id: int, expires_delta: Optional[timedelta] = None) -> str:
     if expires_delta is None:
@@ -61,8 +59,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail = "Invalid or expired token",
+            detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"}
         )
     return user_id
-
