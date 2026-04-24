@@ -1,0 +1,86 @@
+﻿<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar Tarea' : 'Nueva Tarea' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="form-container">
+    <ion-card class="main-card">
+      <ion-card-content>
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+          
+          <ion-input 
+            label="Título de la tarea" 
+            labelPlacement="floating" 
+            fill="outline" 
+            type="text" 
+            formControlName="title" 
+            placeholder="Ej: Comprar leche"
+            class="ion-margin-bottom">
+          </ion-input>
+
+          <ion-textarea 
+            label="Descripción (Opcional)" 
+            labelPlacement="floating" 
+            fill="outline" 
+            [autoGrow]="true" 
+            formControlName="description"
+            class="ion-margin-bottom">
+          </ion-textarea>
+
+          <div class="selection-grid">
+            <div class="selection-item">
+              <ion-label class="custom-label">Importancia (1-5)</ion-label>
+              <ion-range [min]="1" [max]="5" [snaps]="true" [ticks]="true" formControlName="importance" color="secondary">
+                <ion-label slot="start">1</ion-label>
+                <ion-label slot="end">5</ion-label>
+              </ion-range>
+            </div>
+
+            <div class="selection-item">
+              <ion-label class="custom-label">Esfuerzo (1-5)</ion-label>
+              <ion-range [min]="1" [max]="5" [snaps]="true" [ticks]="true" formControlName="effort" color="tertiary">
+                <ion-label slot="start">1</ion-label>
+                <ion-label slot="end">5</ion-label>
+              </ion-range>
+            </div>
+          </div>
+
+          <div class="date-container ion-margin-bottom">
+            <ion-label class="custom-label">Fecha Límite</ion-label>
+            <div class="datetime-wrapper">
+              <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            </div>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="datetime" presentation="date" formControlName="due_date" [showDefaultButtons]="true" doneText="Ok" cancelText="Cancelar"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </div>
+
+          <div class="priority-preview" *ngIf="taskForm.valid">
+            <ion-text [color]="getPriorityColorClass()">
+              <p>Puntuación de prioridad: <strong>{{ calculateCurrentScore() }}</strong></p>
+            </ion-text>
+          </div>
+
+          <ion-button expand="block" type="submit" [disabled]="taskForm.invalid || (isLoading$ | async)" class="save-btn ion-margin-top">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            {{ isEdit ? 'Actualizar' : 'Guardar' }}
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+
+
+
+
+
+
