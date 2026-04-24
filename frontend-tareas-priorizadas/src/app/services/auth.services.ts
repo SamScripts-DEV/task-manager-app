@@ -1,168 +1,128 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, from, Observable, throwError } from "rxjs"
-import { tap, catchError, finalize } from "rxjs/operators";
-import { Storage } from "@ionic/storage-angular";
-import { AuthResponse, LoginRequest, SignupRequest, User } from "@models/user.model"
-import { environment } from "@env/environment";
+﻿import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, from } from 'rxjs';
+import { tap, catchError, map, finalize, switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage-angular';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class AuthService {
+    private http = inject(HttpClient);
+    private router = inject(Router);
+    private storage = inject(Storage);
 
-    private readonly currentUser$ = new BehaviorSubject<User | null>(null);
-    private readonly isAuthenticated$ = new BehaviorSubject<boolean>(false);
-    private readonly isLoading$ = new BehaviorSubject<boolean>(false);
-    private readonly error$ = new BehaviorSubject<string | null>(null)
+    private readonly API_URL = environment.apiUrl;
 
+    private authSubject = new BehaviorSubject<boolean>(false);
+    isAuthenticated$ = this.authSubject.asObservable();
 
-    private readonly apiUrl = environment.apiUrl;
-    private readonly loginUrl = `${this.apiUrl}/users/login`
-    private readonly signupUrl = `${this.apiUrl}/users/signup`
+    private userSubject = new BehaviorSubject<any>(null);
+    currentUser$ = this.userSubject.asObservable();
 
-    private readonly TOKEN_KEY = 'auth_token';
-    private readonly USER_KEY = 'auth_user';
+    private loadingSubject = new BehaviorSubject<boolean>(false);
+    isLoading$ = this.loadingSubject.asObservable();
 
-    constructor(
-        private http: HttpClient,
-        private storage: Storage
-    ) {
-        this.initializeAuth();
+    private errorSubject = new BehaviorSubject<string | null>(null);
+    error$ = this.errorSubject.asObservable();
+
+    constructor() {
+        this.initStorage();
+    }
+
+    private storageReady$ = new BehaviorSubject<boolean>(false);
+
+    private async initStorage() {
+        await this.storage.create();
+        const token = await this.storage.get('auth_token');
+        if (token) {
+            this.authSubject.next(true);
+            const user = await this.storage.get('user_data');
+            if (user) this.userSubject.next(user);
+        }
+        this.storageReady$.next(true); 
     }
 
 
-    private async initializeAuth(): Promise<void> {
-        await this.storage.create();
-        const token = await this.storage.get(this.TOKEN_KEY);
-        const user = await this.storage.get(this.USER_KEY);
+    get isReady$() {
+        return this.storageReady$.asObservable();
+    }
 
-        if (token && user ) {
-            this.currentUser$.next(user);
-            this.isAuthenticated$.next(true);
+    async initializeAuth() {
+        await this.storage.create();
+        const token = await this.storage.get('auth_token');
+        if (token) {
+            this.authSubject.next(true);
+            const user = await this.storage.get('user_data');
+            if (user) this.userSubject.next(user);
         }
     }
 
-
-    login(email: string, password: string): Observable<AuthResponse> {
-        this.isLoading$.next(true)
-        this.error$.next(null);
-
-        const request: LoginRequest = {email, password};
-
-        return this.http.post<AuthResponse>(this.loginUrl, request).pipe(
-            tap(response => {
-                this.handleAuthSuccess(response);
-            }),
-            catchError(err => {
-                this.handleError(err);
-                return throwError(() => err)
-            }),
-            
-            finalize(() => this.isLoading$.next(false))
-        );     
-    }
-
-
-    signup(
-        email: string,
-        password: string,
-        passwordConfirm: string
-    ): Observable<AuthResponse> {
-        this.isLoading$.next(true);
-        this.error$.next(null);
-
-        const request: SignupRequest = {email, password, password_confirmation: passwordConfirm}
-
-        return this.http.post<AuthResponse>(this.signupUrl, request).pipe(
-            tap(response => {this.handleAuthSuccess(response)}),
-            catchError(err => {
-                this.handleError(err);
-                return throwError(() => err)
-            }),
-            finalize(() => this.isLoading$.next(false))
-        )
-
-    }
-
-    async logout(): Promise<void> {
-        await this.storage.remove(this.TOKEN_KEY);
-        await this.storage.remove(this.USER_KEY);
-
-        this.currentUser$.next(null);
-        this.isAuthenticated$.next(false);
-
-        this.error$.next(null);
-
-    }
-
-
-    getToken(): Observable<string | null> {
-        return from(this.storage.get(this.TOKEN_KEY));
-    }
-
     async getTokenAsync(): Promise<string | null> {
-        return await this.storage.get(this.TOKEN_KEY);
+        return await this.storage.get('auth_token');
     }
 
+    login(email: string, password: string): Observable<any> {
+        this.loadingSubject.next(true);
+        this.errorSubject.next(null);
 
+        return this.http.post(this.API_URL + '/users/login', { email, password }).pipe(
+            switchMap((res: any) => {
+                console.log('--- LOGIN RESPONSE DATA ---', res);
 
+                const token = res.access_token || res.token || res.access;
+                const user = res.user || { email };
 
+                console.log('--- EXTRACTED TOKEN ---', token);
 
-    //----------------------------------------------------
-    
-    currentUser = this.currentUser$.asObservable();
-    isAuthenticated = this.isAuthenticated$.asObservable();
-    isLoading = this.isLoading$.asObservable();
-    error = this.error$.asObservable();
-
-
-    get isAuthenticatedValue(): boolean {
-        return this.isAuthenticated$.value;
+                return from(Promise.all([
+                    this.storage.set('auth_token', token),
+                    this.storage.set('user_data', user)
+                ])).pipe(
+                    tap(() => console.log('--- TOKEN SAVED IN STORAGE ---')),
+                    map(() => {
+                        this.userSubject.next(user);
+                        this.authSubject.next(true);
+                        return res;
+                    })
+                );
+            }),
+            catchError((error: HttpErrorResponse) => {
+                const msg = error.status === 401 ? 'Credenciales incorrectas' : 'Error al iniciar sesion';
+                this.errorSubject.next(msg);
+                return throwError(() => msg);
+            }),
+            finalize(() => this.loadingSubject.next(false))
+        );
     }
 
-    get currentUserValue(): User | null {
-        return this.currentUser$.value;
-
+    signup(email: string, password: string, passwordConfirm: string): Observable<any> {
+        this.loadingSubject.next(true);
+        this.errorSubject.next(null);
+        return this.http.post(this.API_URL + '/users/signup', { email, password, passwordConfirm }).pipe(
+            catchError((error: HttpErrorResponse) => {
+                const msg = 'Error al crear cuenta';
+                this.errorSubject.next(msg);
+                return throwError(() => msg);
+            }),
+            finalize(() => this.loadingSubject.next(false))
+        );
     }
 
-    get isLoadingValue(): boolean {
-        return this.isLoading$.value;
+    async logout() {
+        await this.storage.remove('auth_token');
+        await this.storage.remove('user_data');
+        this.authSubject.next(false);
+        this.userSubject.next(null);
+        this.router.navigate(['/login']);
     }
 
-
-
-    private handleAuthSuccess(response: AuthResponse): void {
-        this.storage.set(this.TOKEN_KEY, response.access_token);
-        this.storage.set(this.USER_KEY, response.user);
-
-        this.currentUser$.next(response.user);
-        this.isAuthenticated$.next(true);
-
-        this.error$.next(null);
+    get isAuthenticated(): Observable<boolean> {
+        return this.isAuthenticated$;
     }
-
-
-  private handleError(error: any): void {
-    let errorMessage = 'Unknown error';
-
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else if (error.status === 400) {
-      errorMessage = error.error?.detail || 'Invalid data';
-    } else if (error.status === 401) {
-      errorMessage = 'Not authenticated';
-    } else if (error.status === 409) {
-      errorMessage = 'The email already exists';
-    } else if (error.status === 0) {
-      errorMessage = 'Could not connect to the server';
-    } else {
-      errorMessage = `Error: ${error.status}`;
-    }
-
-    this.error$.next(errorMessage);
-  }
-
-
 }
+
+
+
