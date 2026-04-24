@@ -40,7 +40,7 @@ Esta es la forma más fácil y recomendada para levantar el entorno completo.
 
 ### 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/tu-usuario/gestor-de-tareas.git](https://github.com/SamScripts-DEV/task-manager-app.git)
+git clone https://github.com/tu-usuario/gestor-de-tareas.git
 
 cd gestor-de-tareas
 ```
