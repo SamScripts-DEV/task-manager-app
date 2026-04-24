@@ -20,7 +20,7 @@ A continuación, encontrarás todas las instrucciones necesarias para desplegar 
 
 <img width="267" height="477" alt="image" src="https://github.com/user-attachments/assets/cd540a9e-3204-4ebb-bfe6-150c4245b4c0" />
 
-*Si no tinene un usuario, puede registrarse*
+*Si no tiene un usuario, puede registrarse*
 
 
 ---
