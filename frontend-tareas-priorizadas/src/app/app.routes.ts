@@ -1,28 +1,34 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthService } from '@services/auth.services';
+import { AuthService } from './services/auth.services';
 import { Router } from '@angular/router';
-import { map, take } from 'rxjs';
+import { map, take, filter, switchMap } from 'rxjs';
 
 
 const authGuardFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.isAuthenticated.pipe(
+  return authService.isReady$.pipe(
+    filter(ready => ready === true),
     take(1),
-    map(isAuth => isAuth ? true : router.parseUrl('/login'))
+    switchMap(() => authService.isAuthenticated$.pipe(take(1))),
+    map(isAuth => {
+      console.log('--- GUARD CHECK --- isAuth:', isAuth);
+      return isAuth ? true : router.parseUrl('/login');
+    })
   );
 };
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login', 
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
-    path: 'login', 
+    path: 'login',
+    pathMatch: 'full',
     loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
   },
   {
@@ -31,7 +37,8 @@ export const routes: Routes = [
   },
   {
     path: 'tasks',
-    canActivate: [authGuardFn], 
+    pathMatch: 'full',
+    canActivate: [authGuardFn],
     loadComponent: () => import('./pages/tasks/tasks.component').then(m => m.TasksComponent),
   },
   {
@@ -49,3 +56,7 @@ export const routes: Routes = [
     redirectTo: 'login',
   },
 ];
+
+
+
+
