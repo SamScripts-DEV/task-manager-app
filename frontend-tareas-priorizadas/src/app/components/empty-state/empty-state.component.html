@@ -1,0 +1,15 @@
+﻿<div class="empty-state" [class]="'empty-state-' + state">
+  
+  <ion-icon [name]="getStateConfig().icon" class="empty-state-icon"></ion-icon>
+
+  
+  <h3 class="empty-state-title">{{ getStateConfig().title }}</h3>
+
+  
+  <p class="empty-state-message">{{ getStateConfig().message }}</p>
+
+  
+  <ng-content></ng-content>
+</div>
+
+
