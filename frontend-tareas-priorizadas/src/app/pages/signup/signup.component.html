@@ -1,0 +1,64 @@
+﻿<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crear Cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding auth-content">
+  <div class="auth-container">
+    <div class="auth-header">
+      <ion-icon name="person-add-outline" class="hero-icon"></ion-icon>
+      <h1>Únete a Tareas Priorizadas</h1>
+      <p>Organiza tu día con inteligencia</p>
+    </div>
+
+    <ion-card class="auth-card">
+      <ion-card-content>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          <ion-item lines="outline" class="ion-margin-bottom">
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+
+          <ion-item lines="outline" class="ion-margin-bottom">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+
+          <ion-item lines="outline" class="ion-margin-bottom">
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input type="password" formControlName="passwordConfirm"></ion-input>
+          </ion-item>
+
+          <div class="error-container" *ngIf="error$ | async as error">
+            <ion-text color="danger">
+              <p>{{ error }}</p>
+            </ion-text>
+          </div>
+
+          <ion-button expand="block" type="submit" [disabled]="signupForm.invalid || (isLoading$ | async)" class="main-btn">
+            <ion-spinner *ngIf="isLoading$ | async" name="crescent"></ion-spinner>
+            <span *ngIf="!(isLoading$ | async)">Crear Cuenta</span>
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="auth-footer">
+      <p>¿Ya tienes una cuenta?</p>
+      <ion-button fill="clear" (click)="goToLogin()">
+        Iniciar Sesión
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+
+
+
+
+
+
