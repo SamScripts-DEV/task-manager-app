@@ -54,7 +54,24 @@ Copy-Item .env.example -Destination .env
 # En Linux/Mac:
 cp .env.example .env
 ```
-Abre el archivo `.env` raíz y modifica las contraseñas, usuarios o secretos si lo ves necesario. Estos valores configurarán tanto la base de datos como el backend y pgAdmin.
+
+Abre este nuevo archivo `.env` en tu editor de texto. Aquí tienes lo que significa cada campo para que lo modifiques si lo necesitas:
+
+* **PostgreSQL (Base de datos):**
+  * `POSTGRES_USER`: Nombre del usuario administrador de la base de datos.
+  * `POSTGRES_PASSWORD`: Tu contraseña secreta para la base de datos.
+  * `POSTGRES_DB`: El nombre de la base de datos que se creará automáticamente la primera vez.
+
+* **pgAdmin (Interfaz visual de la base de datos):**
+  * `PGADMIN_DEFAULT_EMAIL`: Correo electrónico con el que iniciarás sesión en el panel web de pgAdmin.
+  * `PGADMIN_DEFAULT_PASSWORD`: Contraseña para entrar a pgAdmin.
+
+* **Backend (FastAPI y Seguridad):**
+  * `DATABASE_URL`: Es la URL completa de conexión a la base de datos. (*Ojo: Si levantas el backend localmente usando uvicorn, esta URL apunta a `localhost:5434`. Si usas docker-compose, el propio compose la reescribe de forma interna*).
+  * `JWT_SECRET`: Una cadena de texto secreta, robusta y al azar usada para encriptar los tokens de sesión de los usuarios. Puedes poner lo que quieras.
+  * `JWT_ALGORITHM`: Algoritmo de encriptación (déjalo en `HS256`).
+  * `ACCESS_TOKEN_EXPIRE_MINUTES`: Tiempo en minutos que el token de sesión (login) será válido antes de expirar.
+  * `DEBUG`, `API_HOST`, `API_PORT`: Configuraciones sencillas para el comportamiento del framework FastAPI.
 
 ### 3. Levantar los Servicios
 ```bash
