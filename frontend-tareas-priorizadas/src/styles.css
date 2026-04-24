@@ -1,0 +1,50 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+ion-content {
+  --padding-bottom: 80px !important;
+}
+
+
+@media (max-height: 600px) {
+  ion-content {
+    --padding-bottom: 120px !important;
+  }
+}
+
+ion-button {
+  --color: inherit;
+  position: relative;
+  z-index: 10;
+}
+
+
+ion-button[color="primary"] {
+  --background: #0066cc;
+  --color: white;
+}
+
+
+ion-button[color="danger"] {
+  --background: #f44336;
+  --color: white;
+}
+
+
+ion-button[color="success"] {
+  --background: #4caf50;
+  --color: white;
+}
+
